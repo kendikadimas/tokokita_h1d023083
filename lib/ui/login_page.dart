@@ -79,9 +79,7 @@ class _LoginPageState extends State<LoginPage> {
     return ElevatedButton(
       child: const Text("Login"),
       onPressed: () {
-        if (_formKey.currentState!.validate()) {
-          Navigator.of(context).pushReplacementNamed('/produk');
-        }
+        var validate = _formKey.currentState!.validate();
       },
     );
   }

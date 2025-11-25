@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tokokita/model/produk.dart';
 import 'package:tokokita/ui/produk_form.dart';
-import 'package:tokokita/ui/produk_page.dart';
 
 // ignore: must_be_immutable
 class ProdukDetail extends StatefulWidget {
@@ -76,11 +75,7 @@ class _ProdukDetailState extends State<ProdukDetail> {
         OutlinedButton(
           child: const Text("Ya"),
           onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const ProdukPage(),
-              ),
-            );
+            Navigator.pop(context);
           },
         ),
         OutlinedButton(
