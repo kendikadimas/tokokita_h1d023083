@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:tokokita/bloc/produk_bloc.dart';
 import 'package:tokokita/model/produk.dart';
 import 'package:tokokita/ui/produk_form.dart';
+import 'package:tokokita/ui/produk_page.dart';
+import 'package:tokokita/widget/dialog.dart';
 
-// ignore: must_be_immutable
 class ProdukDetail extends StatefulWidget {
-  Produk? produk;
+  final Produk? produk;
 
-  ProdukDetail({Key? key, this.produk}) : super(key: key);
+  const ProdukDetail({Key? key, this.produk}) : super(key: key);
 
   @override
   _ProdukDetailState createState() => _ProdukDetailState();
@@ -45,7 +47,6 @@ class _ProdukDetailState extends State<ProdukDetail> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Tombol Edit
         OutlinedButton(
           child: const Text("EDIT"),
           onPressed: () {
@@ -59,7 +60,6 @@ class _ProdukDetailState extends State<ProdukDetail> {
             );
           },
         ),
-        // Tombol Hapus
         OutlinedButton(
           child: const Text("DELETE"),
           onPressed: () => confirmHapus(),
@@ -69,21 +69,46 @@ class _ProdukDetailState extends State<ProdukDetail> {
   }
 
   void confirmHapus() {
-    AlertDialog alertDialog = AlertDialog(
-      content: const Text("Yakin ingin menghapus data ini?"),
-      actions: [
-        OutlinedButton(
-          child: const Text("Ya"),
-          onPressed: () {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const Text("Yakin ingin menghapus data ini?"),
+          actions: [
+            OutlinedButton(
+              child: const Text("Ya"),
+              onPressed: () {
+                Navigator.pop(context); // Close the confirmation dialog
+                _deleteProduk();
+              },
+            ),
+            OutlinedButton(
+              child: const Text("Batal"),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteProduk() {
+    ProdukBloc.deleteProduk(id: int.parse(widget.produk!.id!)).then((value) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => const ProdukPage(),
+        ),
+      );
+    }).catchError((error) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => WarningDialog(
+          description: "Hapus gagal, silahkan coba lagi",
+          okCallback: () {
             Navigator.pop(context);
           },
         ),
-        OutlinedButton(
-          child: const Text("Batal"),
-          onPressed: () => Navigator.pop(context),
-        )
-      ],
-    );
-    showDialog(builder: (context) => alertDialog, context: context);
+      );
+    });
   }
 }
